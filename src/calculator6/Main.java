@@ -1,7 +1,7 @@
 package calculator6;
 import java.util.*;
 public class Main {
-    private final static List<String> symbolList = new ArrayList<>(Arrays.asList("+", "-", "*", "/", "%", "^", "(", ")", "sqrt(", "!"));
+    private final static List<String> symbolList = new ArrayList<>(Arrays.asList("+", "-", "*", "/", "%", "^", "(", ")", "sqrt(", "sin(", "cos(", "tan(", "!"));
     public static boolean isInt(String str)
     {
         if (!Character.isDigit(str.charAt(0)) && !(str.charAt(0) == '-'))
