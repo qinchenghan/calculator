@@ -1,7 +1,6 @@
 package calculator1;
 import java.util.*;
 public class Main {
-    // + - * / ( ) ^ % ! 
     public static boolean isInt(String str)
     {
         for (int i = 0; i < str.length(); i++)

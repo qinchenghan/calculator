@@ -93,6 +93,8 @@ public class Main {
                 System.out.println("() found");
                 int start = list.indexOf("(");
                 int end = indexoflast(list, ")");
+
+                // 1 + 2 ) + ( 3 + 4 
                 List<String> list1 = new ArrayList<>(list.subList(0, start));
                 List<String> list2 = new ArrayList<>(list.subList(start + 1, end));
                 System.out.println("expression inside () is " + list2);
@@ -120,12 +122,17 @@ public class Main {
                 list.remove(index + 1);
                 list.remove(index - 1);
                 System.out.println("expression after ^ is " + list);
-            }
+            } // 2 ^ 2 = 4     sqrt(4) square root
             else if (list.contains("*") || list.contains("/") || list.contains("%"))
             {
                 int im = list.indexOf("*");
                 int id = list.indexOf("/");
                 int imo = list.indexOf("%");
+                // 7 % 4 = 3
+                // 7 / 3 = 2.3333333333
+                // 81 / 7 =
+                // i = 11 11 * 7 == 77 81 - 77 = 4
+                // 81 % 7 = 4
                 int index = nonNegativeMin(im, id, imo);
                 int num1 = Integer.parseInt(list.get(index - 1));
                 int num2 = Integer.parseInt(list.get(index + 1));
@@ -196,3 +203,5 @@ public class Main {
         in.close();
     }
 }
+
+// 1 + =

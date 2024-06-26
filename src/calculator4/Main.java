@@ -92,6 +92,14 @@ public class Main {
             {
                 int index = nonNegativeMin(list.indexOf("("), list.indexOf(")"), -1);
                 if (list.get(index).equals("("))
+                //  ( 1 + 2 ) + ( 3 + 4 )
+                //  1 + 2 ) + ( 3 + 4 )
+                // 1 + 2 = 3
+                //  3 + ( 3 + 4 )
+                // 3 + 4 )
+                // 7
+                // 3 + 7
+                //10
                 {
                     System.out.println("( found");
                     List<String> list1 = new ArrayList<>(list.subList(0, index));
