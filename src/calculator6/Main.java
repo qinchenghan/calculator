@@ -1,7 +1,8 @@
 package calculator6;
 import java.util.*;
 public class Main {
-    private final static List<String> symbolList = new ArrayList<>(Arrays.asList("+", "-", "*", "/", "%", "^", "(", ")", "sqrt(", "sin(", "cos(", "tan(", "log(", "!"));
+    private final static List<String> opList = new ArrayList<>(Arrays.asList("+", "-", "*", "/", "%", "^", "(", ")", "!", "sqrt(", "sin(", "cos(", "tan(", "log(", "ln("));
+    private final static List<String> parenList = new ArrayList<>(Arrays.asList("(", "sqrt(", "sin(", "cos(", "tan(", "log(", "ln("));
     public static boolean isInt(String str)
     {
         if (!Character.isDigit(str.charAt(0)) && !(str.charAt(0) == '-'))
@@ -72,6 +73,29 @@ public class Main {
         return true;
     }
 
+    public static int nonNegativeMin(int a, int b)
+    {
+        if (a < 0 && b < 0)
+        {
+            throw new ArithmeticException();
+        }
+        if (a < 0) return b;
+        else if (b < 0) return a;
+        else return Math.min(a, b);
+    }
+
+    public static boolean overlap(List<String> list1, List<String> list2)
+    {
+        for (int i = 0; i < list1.size(); i++)
+        {
+            if (list2.contains(list1.get(i)))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static Double factorial(Double a)
     {
         if (a < 0 || a % 1 != 0)
@@ -86,59 +110,13 @@ public class Main {
         return res;
     }
 
-    public static int nonNegativeMin(int a, int b, int c)
-    {
-        if (a < 0 && b < 0 && c < 0)
-        {
-            throw new IndexOutOfBoundsException();
-        }
-        else if (a < 0)
-        {
-            if (b < 0)
-            {
-                return c;
-            }
-            else if (c < 0)
-            {
-                return b;
-            }
-            else
-            {
-                return Math.min(b, c);
-            }
-        }
-        else if (b < 0)
-        {
-            if (c < 0)
-            {
-                return a;
-            }
-            else
-            {
-                return Math.min(a, c);
-            }
-        }
-        else if (c < 0)
-        {
-            return Math.min(a, b);
-        }
-        else
-        {
-            return Math.min(Math.min(a, b), c);
-        }
-    }
-
     public static boolean matchingParen(List<String> list)
     {
         int res = 0;
         for (int i  = 0; i < list.size(); i++)
         {
             String str = list.get(i);
-            if (str.equals("("))
-            {
-                res++;
-            }
-            else if (str.equals("sqrt("))
+            if (parenList.contains(str))
             {
                 res++;
             }
@@ -147,40 +125,34 @@ public class Main {
                 res--;
             }
         }
-        if (res == 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        if (res == 0) return true;
+        else return false;
     }
 
     public static boolean validInput(List<String> list)
     {
-        if (list.size() == 2 && !list.contains(")") && !list.contains("!"))
-        {
-            return false;
-        }
-        boolean hasSymbol = false;
+        System.out.println("Validating Input");
+        boolean hasOp = false;
         for (int i = 0; i < list.size(); i++)
         {
             String str = list.get(i);
-            if (symbolList.contains(str))
+            if (opList.contains(str))
             {
-                hasSymbol = true;
+                hasOp = true;
                 continue;
             }
             if (!isDouble(str))
             {
+                System.out.println("Validation failure");
                 return false;
             }
         }
         if (list.size() > 1)
         {
-            return true && hasSymbol;
+            System.out.println("Validation is " + hasOp);
+            return hasOp;
         }
+        System.out.println("Validation successful");
         return true;
     }
 
@@ -210,7 +182,7 @@ public class Main {
         {
             throw new ArithmeticException();
         }
-        String symbol = list.get(index);
+        String op = list.get(index);
         double num1;
         double num2;
         double num;
@@ -222,7 +194,7 @@ public class Main {
         } catch (Exception e) {
             throw new Exception();
         }
-        switch (symbol) {
+        switch (op) {
             case "+":
                 num = num1 + num2;
                 break;
@@ -260,8 +232,8 @@ public class Main {
 
     public static List<String> handleParenthesis(List<String> list, int index) throws Exception
     {
-        String symbol = list.get(index);
-        if (symbol.equals("("))
+        String op = list.get(index);
+        if (op.equals("("))
         {
             List<String> list1 = new ArrayList<>(list.subList(0, index));
             List<String> list2 = new ArrayList<>();
@@ -269,7 +241,7 @@ public class Main {
             list1.addAll(list2);
             list = list1;
         }
-        else if (symbol.equals(")"))
+        else if (op.equals(")"))
         {
             List<String> list1 = new ArrayList<>();
             List<String> list2 = new ArrayList<>(list.subList(index + 1, list.size()));
@@ -292,13 +264,37 @@ public class Main {
         return -1;
     }
 
-    public static List<String> handleSquareRoot(List<String> list, int index) throws Exception
+    public static List<String> handleComplex(List<String> list, int index) throws Exception
     {
+        String op = list.get(index);
         int index2 = indexOfAfter(list, ")", index);
         List<String> list1 = new ArrayList<>(list.subList(0, index));
         List<String> list2 = new ArrayList<>(list.subList(index + 1, index2));
         List<String> list3 = new ArrayList<>(list.subList(index2 + 1, list.size()));
-        list1.add(Double.toString(Math.sqrt(solveExpression(list2))));
+        Double res = solveExpression(list2);
+        switch (op) {
+            case "sqrt(":
+                res = Math.sqrt(res);
+                break;
+            case "sin(":
+                res = Math.sin(res);
+                break;
+            case "cos(":
+                res = Math.cos(res);
+                break;
+            case "tan(":
+                res = Math.tan(res);
+                break;
+            case "log(":
+                res = Math.log10(res);
+                break;
+            case "ln(":
+                res = Math.log(res);
+                break;
+            default:
+                throw new ArithmeticException();
+        }
+        list1.add(Double.toString(res));
         list1.addAll(list3);
         return list1;
     }
@@ -312,14 +308,24 @@ public class Main {
         }
         while (list.size() > 1)
         {
-            if (list.contains("sqrt("))
+            if (list.contains("sqrt(") || list.contains("sin("))
             {
-                int index = list.indexOf("sqrt(");
-                list = handleSquareRoot(list, index);
+                int index = nonNegativeMin(list.indexOf("sqrt("), list.indexOf("sin("));
+                list = handleComplex(list, index);
+            }
+            else if (list.contains("cos(") || list.contains("tan("))
+            {
+                int index = nonNegativeMin(list.indexOf("cos("), list.indexOf("tan("));
+                list = handleComplex(list, index);
+            }
+            else if (list.contains("log(") || list.contains("ln("))
+            {
+                int index = nonNegativeMin(list.indexOf("log("), list.indexOf("ln("));
+                list = handleComplex(list, index);
             }
             else if (list.contains(")"))
             {
-                int index = nonNegativeMin(list.indexOf("("), list.indexOf(")"), -1);
+                int index = nonNegativeMin(list.indexOf("("), list.indexOf(")"));
                 list = handleParenthesis(list, index);
             }
             else if (list.contains("!"))
@@ -327,19 +333,19 @@ public class Main {
                 int index = list.indexOf("!");
                 list = handleFactorial(list, index);
             }
-            else if (list.contains("^"))
+            else if (list.contains("^") || list.contains("%"))
             {
-                int index = list.indexOf("^");
+                int index = nonNegativeMin(list.indexOf("^"), list.indexOf("%"));
                 list = handleBasicOperation(list, index);
             }
-            else if (list.contains("*") || list.contains("/") || list.contains("%"))
+            else if (list.contains("*") || list.contains("/"))
             {
-                int index = nonNegativeMin(list.indexOf("*"), list.indexOf("/"), list.indexOf("%"));
+                int index = nonNegativeMin(list.indexOf("*"), list.indexOf("/"));
                 list = handleBasicOperation(list, index);
             }
             else if (list.contains("+") || list.contains("-"))
             {
-                int index = nonNegativeMin(list.indexOf("+"), list.indexOf("-"), -1);
+                int index = nonNegativeMin(list.indexOf("+"), list.indexOf("-"));
                 list = handleBasicOperation(list, index);
             }
             else
@@ -347,7 +353,17 @@ public class Main {
                 throw new ArithmeticException();
             }
         }
-        return Double.parseDouble(list.get(0));
+        Double res;
+        try {
+            res = Double.parseDouble(list.get(0));
+        } catch (ArithmeticException e) {
+            throw new ArithmeticException();
+        } catch (NumberFormatException e) {
+            throw new ArithmeticException();
+        } catch (Exception e) {
+            throw new Exception();
+        }
+        return res;
     }
 
     public static List<String> parseStrings(String str)
@@ -357,38 +373,58 @@ public class Main {
         for (int i = 0; i < str.length(); i++)
         {
             String s = str.substring(i, i + 1);
-            if (temp.isEmpty() && s.equals("-"))
+            if (str.substring(i).startsWith("sqrt("))
             {
-                temp += s;
+                list.add(temp);
+                temp = "";
+                list.add("sqrt(");
+                i += 4;
             }
-            else if (i < str.length() - 4 && s.equals("s"))
+            else if (str.substring(i).startsWith("sin(") || str.substring(i).startsWith("cos(") || str.substring(i).startsWith("tan(") || str.substring(i).startsWith("log("))
             {
-                if (str.substring(i, i + 5).equals("sqrt("))
+                list.add(temp);
+                temp = "";
+                list.add(str.substring(i, 4));
+                i += 3;
+            }
+            else if (str.substring(i).startsWith("ln("))
+            {
+                list.add(temp);
+                temp = "";
+                list.add("ln(");
+                i += 2;
+            }
+            else if (str.substring(i).startsWith("pi"))
+            {
+                list.add(temp);
+                temp = "";
+                list.add(Double.toString(Math.PI));
+                i++;
+            }
+            else if (s.equals("e"))
+            {
+                list.add(temp);
+                temp = "";
+                list.add(Double.toString(Math.E));
+            }
+            else if (opList.contains(s))
+            {
+                if (s.equals("-"))
                 {
-                    if (temp.equals(".") || temp.equals("-"))
-                    {
-                        throw new ArithmeticException();
-                    }
-                    if (!temp.isEmpty())
+                    if (i != 0 && ("0123456789)".contains(str.substring(i - 1, i))))
                     {
                         list.add(temp);
                         temp = "";
+                        list.add(s);
                     }
-                    list.add("sqrt(");
-                    i += 4;
-                }
-            }
-            else if (symbolList.contains(s))
-            {
-                if (temp.equals(".") || temp.equals("-"))
-                {
-                    throw new ArithmeticException();
-                }
-                if (!temp.isEmpty())
-                {
-                    list.add(temp);
-                    temp = "";
-                }
+                    else
+                    {
+                        temp += s;
+                    }
+                    continue;
+                }  
+                list.add(temp);
+                temp = "";
                 list.add(s);
             }
             else if (Character.isDigit(s.charAt(0)))
@@ -397,28 +433,14 @@ public class Main {
             }
             else if (s.equals("."))
             {
-                if (!temp.contains("."))
-                {
-                    temp += s;
-                }
-                else
-                {
-                    throw new ArithmeticException();
-                }
+                temp += s;
             }
             else
             {
                 throw new ArithmeticException();
             }
         }
-        if (!temp.isEmpty())
-        {
-            if (!isDouble(temp))
-            {
-                throw new ArithmeticException();
-            }
-            list.add(temp);
-        }
+        list.add(temp);
         return list;
     }
 
@@ -440,6 +462,8 @@ public class Main {
             } catch (Exception e) {
                 System.out.println("Something went wrong, pleas try again!");
             }
+            list.removeIf(String::isEmpty);
+            System.out.println(list);
             if (list.size() > 0)
             {
                 if (!validInput(list))
