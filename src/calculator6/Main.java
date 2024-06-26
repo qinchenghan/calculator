@@ -396,6 +396,13 @@ public class Main {
             }
             else if (str.substring(i).startsWith("pi"))
             {
+                if (temp.equals("-"))
+                {
+                    list.add(Double.toString(-Math.PI));
+                    temp = "";
+                    i++;
+                    continue;
+                }
                 list.add(temp);
                 temp = "";
                 list.add(Double.toString(Math.PI));
@@ -403,6 +410,12 @@ public class Main {
             }
             else if (s.equals("e"))
             {
+                if (temp.equals("-"))
+                {
+                    list.add(Double.toString(-Math.E));
+                    temp = "";
+                    continue;
+                }
                 list.add(temp);
                 temp = "";
                 list.add(Double.toString(Math.E));
