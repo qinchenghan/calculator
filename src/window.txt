@@ -1,0 +1,2 @@
+javac window/*.java
+java window.Main

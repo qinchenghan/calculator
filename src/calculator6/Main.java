@@ -2,9 +2,7 @@ package calculator6;
 import java.util.*;
 public class Main {
     private final static List<String> opList = new ArrayList<>(Arrays.asList("+", "-", "*", "/", "%", "^", "(", ")", "!", "sqrt(", "sin(", "cos(", "tan(", "log(", "ln("));
-    private final static List<String> parenList = new ArrayList<>(Arrays.asList( //4! = 24 = 1 * 2 * 3 * 4  5! = 1 * 2 * 3 * 4 * 5 = 120  10 ^ 2 = 100
-                                                                                            // pi = 3.14..... 
-                                                                                            // e = 2.71.........                  cos(pi) = -1 sin(pi) = 0    log_10(100) = 2 ln() = log_e() log_2(8) = 3 log_2(13) = 
+    private final static List<String> parenList = new ArrayList<>(Arrays.asList(
         "(", "sqrt(", "sin(", "cos(", "tan(", "log(", "ln("));
     public static boolean isInt(String str)
     {
@@ -467,8 +465,6 @@ public class Main {
         while (in.hasNextLine())
         {
             String str = in.nextLine().replaceAll(" ", "").toLowerCase();
-            // str = "1 +1" "11"
-            // str
             if (str.equals("stop"))
             {
                 break;
@@ -476,7 +472,6 @@ public class Main {
             List<String> list = new ArrayList<>();
             try {
                 list = parseStrings(str);
-                // list = [1, +, 1]
             } catch (ArithmeticException e) {
                 System.out.println("Invalid input, please try again!");
             } catch (Exception e) {
